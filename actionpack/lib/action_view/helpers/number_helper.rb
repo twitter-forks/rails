@@ -85,11 +85,14 @@ module ActionView
         separator = '' if precision == 0
 
         begin
-          format.gsub(/%n/, number_with_precision(number,
+          value = number_with_precision(number,
             :precision => precision,
             :delimiter => delimiter,
             :separator => separator)
-          ).gsub(/%u/, unit).html_safe
+
+          return nil if value.nil?
+
+          format.gsub(/%n/, ERB::Util.html_escape(value)).gsub(/%u/, ERB::Util.html_escape(unit)).html_safe
         rescue
           number
         end
